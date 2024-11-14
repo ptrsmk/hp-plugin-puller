@@ -10,8 +10,8 @@ Author URI: https://github.com/ptrsmk/
 
 if (!defined('YOURLS_ABSPATH')) die();
 
-yourls_add_action('plugins_loaded', 'holyp_download_plugin_settings');
-function holyp_download_plugin_settings()
+yourls_add_action('plugins_loaded', 'holyp_plugin_puller_settings');
+function holyp_plugin_puller_settings()
 {
     yourls_register_plugin_page('hp_puller_settings', 'Plugin Puller', 'holyp_plugin_puller_page');
 }
@@ -21,13 +21,13 @@ function holyp_plugin_puller_page()
     $msg = '';
 
     if (isset($_POST['github_url'])) {
-        yourls_verify_nonce('download_plugin_settings');
+        yourls_verify_nonce('plugin_puller_settings');
         list($is, $txt) = holyp_pull_plugin();
         $info = $is ? ['txt' => 'success', 'color' => 'green'] : ['text' => 'fail', 'color' => 'red'];
         $msg = "<p style='color: {$info['color']}'>download {$info['txt']}: {$txt}</p>";
     }
 
-    $nonce = yourls_create_nonce('download_plugin_settings');
+    $nonce = yourls_create_nonce('plugin_puller_settings');
     echo <<<HTML
         <main>
             <h2>Pull a Plugin</h2>
@@ -40,7 +40,6 @@ function holyp_plugin_puller_page()
                 <input type="text" name="github_url" value="" required />
                 <hint>supports github, like: <code>https://github.com/ptrsmk/hp-plugin-puller</code></hint>
             </p>
-            <p>
             <p>
                 <label>Folder Name</label>
                 <input type="text" name="folder_name" value="" />
